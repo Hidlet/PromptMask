@@ -17,7 +17,7 @@
             --accent-color-hover: #4a4a4c;
             --accent-text: #ffffff;
             --highlight: #1c1c1e;
-            --radius-md: 100px; /* 胶囊状按钮更符合现代极简风 */
+            --radius-md: 100px;
             --radius-lg: 24px;
             --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.02);
             --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08), 0 4px 8px rgba(0, 0, 0, 0.03);
@@ -103,8 +103,20 @@
             font-weight: 600;
         }
 
+        /* 按钮组样式 */
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 0.5rem;
+        }
+
         .download-btn {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             padding: 14px 32px;
             font-size: 1.05rem;
             font-weight: 500;
@@ -113,19 +125,31 @@
             border-radius: var(--radius-md);
             text-decoration: none;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            border: none;
+            border: 2px solid var(--accent-color);
             cursor: pointer;
             box-shadow: var(--shadow-sm);
         }
 
         .download-btn:hover {
             background-color: var(--accent-color-hover);
+            border-color: var(--accent-color-hover);
             transform: scale(1.03);
             box-shadow: var(--shadow-md);
         }
 
         .download-btn:active {
             transform: scale(0.97);
+        }
+
+        /* 次级按钮样式（空心） */
+        .download-btn.secondary {
+            background-color: transparent;
+            color: var(--accent-color);
+        }
+
+        .download-btn.secondary:hover {
+            background-color: var(--accent-color);
+            color: var(--accent-text);
         }
         
         .header-btn {
@@ -219,8 +243,14 @@
             <h1>让 AI 时代的隐私更安全</h1>
             <p class="subtitle">专为大模型（LLM）时代打造的本地数据引擎。<br class="desktop-br">在您将文档或图片喂给 ChatGPT / Claude 等 AI 前进行智能脱敏，<br class="desktop-br"><span class="highlight-text">彻底杜绝机密数据被用作 AI 训练的泄露风险</span>。</p>
             <div id="download" style="margin-top: 0.5rem;">
-                <a href="PromptMask-Setup-1.1.0.exe" class="download-btn">立即下载 Windows 版</a>
-                <div class="version-info">最新版本: v1.1.0 | 适用于 Windows 10/11</div>
+                
+                <!-- 新增的按钮组区域 -->
+                <div class="button-group">
+                    <a href="https://github.com/Hidlet/PromptMask/releases/download/V1.1.0/promptmask-1.1.0-setup.exe" class="download-btn">下载 Windows 客户端</a>
+                    <a href="https://chromewebstore.google.com/detail/hmpgbiloibmokhoocjonecoincmljimb?utm_source=item-share-cb" target="_blank" class="download-btn secondary">安装 Chrome 扩展</a>
+                </div>
+
+                <div class="version-info">注：客户端需配合 Chrome 扩展一起使用 | 适用于 Windows 10/11</div>
             </div>
         </section>
 
