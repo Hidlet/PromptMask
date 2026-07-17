@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PromptMask - 智能数据脱敏工具，拒绝 AI 隐私泄露</title>
+    <meta name="description" content="PromptMask 是一款专为大模型时代打造的本地数据脱敏客户端，在将文档或图片发给 AI 前进行智能脱敏，彻底杜绝隐私泄露风险。">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #f2f2f7;
+            --bg-card: rgba(255, 255, 255, 0.65);
+            --border-color: rgba(0, 0, 0, 0.08);
+            --text-primary: rgba(0, 0, 0, 0.9);
+            --text-secondary: rgba(0, 0, 0, 0.55);
+            --accent-color: #3a3a3c;
+            --accent-color-hover: #4a4a4c;
+            --accent-text: #ffffff;
+            --highlight: #1c1c1e;
+            --radius-md: 100px; /* 胶囊状按钮更符合现代极简风 */
+            --radius-lg: 24px;
+            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.02);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08), 0 4px 8px rgba(0, 0, 0, 0.03);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 50% -20%, #ffffff 0%, transparent 50%),
+                radial-gradient(circle at 10% 80%, rgba(255,255,255,0.8) 0%, transparent 40%);
+            background-attachment: fixed;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Nav */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        header.scrolled {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.5px;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 1.25rem;
+            color: var(--text-primary);
+            letter-spacing: -0.03em;
+        }
+
+        .subtitle {
+            font-size: clamp(1rem, 1.5vw, 1.15rem);
+            color: var(--text-secondary);
+            max-width: 620px;
+            margin-bottom: 3rem;
+            line-height: 1.7;
+        }
+
+        .highlight-text {
+            color: var(--highlight);
+            font-weight: 600;
+        }
+
+        .download-btn {
+            display: inline-block;
+            padding: 14px 32px;
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: var(--accent-text);
+            background-color: var(--accent-color);
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+            cursor: pointer;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .download-btn:hover {
+            background-color: var(--accent-color-hover);
+            transform: scale(1.03);
+            box-shadow: var(--shadow-md);
+        }
+
+        .download-btn:active {
+            transform: scale(0.97);
+        }
+        
+        .header-btn {
+            padding: 8px 20px; 
+            font-size: 0.9rem;
+        }
+
+        .version-info {
+            margin-top: 1.25rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 5rem 5%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 2.5rem;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: left;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: rgba(0,0,0,0.15);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+        }
+
+        .feature-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        footer a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .desktop-br {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header id="navbar">
+        <div class="logo">PromptMask</div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h1>让 AI 时代的隐私更安全</h1>
+            <p class="subtitle">专为大模型（LLM）时代打造的本地数据引擎。<br class="desktop-br">在您将文档或图片喂给 ChatGPT / Claude 等 AI 前进行智能脱敏，<br class="desktop-br"><span class="highlight-text">彻底杜绝机密数据被用作 AI 训练的泄露风险</span>。</p>
+            <div id="download" style="margin-top: 0.5rem;">
+                <a href="PromptMask-Setup-1.1.0.exe" class="download-btn">立即下载 Windows 版</a>
+                <div class="version-info">最新版本: v1.1.0 | 适用于 Windows 10/11</div>
+            </div>
+        </section>
+
+        <section class="features">
+            <div class="feature-card">
+                <div class="feature-icon">🛡️</div>
+                <h3>AI 前置脱敏</h3>
+                <p>放心拥抱 AI，告别泄露焦虑。将 Word、Excel 或 PDF 拖入软件，一键替换掉所有关键商业机密和敏感信息，让您能够毫无顾虑地将处理后的文档投喂给大模型。</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">👁️</div>
+                <h3>防止多模态泄露</h3>
+                <p>随着多模态 AI 越来越强大，图片泄露的风险激增。内置高级离线 OCR 引擎，精准识别并打码图片及扫描件中的财务数据、身份证件等敏感信息。</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔌</div>
+                <h3>100% 离线物理隔离</h3>
+                <p>拒绝用隐私换取便利。所有的脱敏分析与运算，均在您的电脑本地纯离线完成。从物理源头上切断原始数据上传云端、被科技巨头收集的可能。</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 PromptMask. All rights reserved. | <a href="https://hidlet.top">Hidlet.top</a></p>
+    </footer>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('navbar');
+            if (window.scrollY > 10) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+    </script>
+</body>
+</html>
